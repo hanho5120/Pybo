@@ -1,17 +1,18 @@
 from flask import Blueprint , render_template,url_for
-from Pybo import  db
+from Pybo import db
 from Pybo.models import Question,Answer
 from datetime import datetime
 from werkzeug.utils import redirect
 
-bp = Blueprint('main',__name__,url_prefix='/')
+
+bp = Blueprint('main', __name__, url_prefix='/') #앞이 / 로 시작하면 블루프린트가 감시
+
 
 
 @bp.route('/')
 def index():
 
-    return redirect(url_for('question.qlist'))  #question 이라는 블루프린트에 qlist함수로 주소를 넘겨라
-
+    return redirect(url_for('question.qlist')) # question 이라는 블루프린트에 qlist함수로 주소를 넘겨라
 
 
 

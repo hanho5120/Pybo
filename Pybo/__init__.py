@@ -2,9 +2,7 @@ from flask import Flask
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
-
 import config
-
 
 naming_convention = {
     "ix": 'ix_%(column_0_label)s',
@@ -18,20 +16,21 @@ migrate = Migrate()
 
 
 app = Flask(__name__)
-app.config.from_object(config)  #데이터베이스 설정
+app.config.from_object(config)
 app.debug = True
 
-        #ORM 데이터베이스 초기화
+# DRM 데이터베이스 초기화
 db.init_app(app)
 
 if app.config['SQLALCHEMY_DATABASE_URI'].startswith("sqlite"):
-        migrate.init_app(app, db, render_as_batch=True)
+    migrate.init_app(app, db, render_as_batch=True)
 else:
-        migrate.init_app(app, db)
+    migrate.init_app(app, db)
+
 
 
 from .views import main_views,question_views,answer_views,auth_views
-app.register_blueprint(main_views.bp)
+app.register_blueprint(main_views.bp)  # uri를 등록시켜줘야
 app.register_blueprint(question_views.bp)
 app.register_blueprint(answer_views.bp)
 app.register_blueprint(auth_views.bp)
@@ -40,12 +39,4 @@ app.register_blueprint(auth_views.bp)
 #필터등록
 from .filter import format_datetime
 app.jinja_env.filters['datetime'] = format_datetime
-
-
-
-
-
-
-
-
 
