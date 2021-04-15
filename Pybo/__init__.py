@@ -11,32 +11,38 @@ naming_convention = {
     "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
     "pk": "pk_%(table_name)s"
 }
+
 db = SQLAlchemy(metadata=MetaData(naming_convention=naming_convention))
 migrate = Migrate()
 
 
-app = Flask(__name__)
-app.config.from_object(config)
-app.debug = True
-
-# DRM 데이터베이스 초기화
-db.init_app(app)
-
-if app.config['SQLALCHEMY_DATABASE_URI'].startswith("sqlite"):
-    migrate.init_app(app, db, render_as_batch=True)
-else:
-    migrate.init_app(app, db)
+def create_app():
 
 
+    app = Flask(__name__)
+    app.config.from_object(config)
+    app.debug = True
 
-from .views import main_views,question_views,answer_views,auth_views
-app.register_blueprint(main_views.bp)  # uri를 등록시켜줘야
-app.register_blueprint(question_views.bp)
-app.register_blueprint(answer_views.bp)
-app.register_blueprint(auth_views.bp)
+    # DRM 데이터베이스 초기화
+    db.init_app(app)
+
+    if app.config['SQLALCHEMY_DATABASE_URI'].startswith("sqlite"):
+        migrate.init_app(app, db, render_as_batch=True)
+    else:
+        migrate.init_app(app, db)
 
 
-#필터등록
-from .filter import format_datetime
-app.jinja_env.filters['datetime'] = format_datetime
 
+    from .views import main_views,question_views,answer_views,auth_views,chatbotviews
+    app.register_blueprint(main_views.bp)  # uri를 등록시켜줘야
+    app.register_blueprint(question_views.bp)
+    app.register_blueprint(answer_views.bp)
+    app.register_blueprint(auth_views.bp)
+    app.register_blueprint(chatbotviews.bp)
+
+
+    #필터등록
+    from .filter import format_datetime
+    app.jinja_env.filters['datetime'] = format_datetime
+
+    return app
